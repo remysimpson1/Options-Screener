@@ -1,4 +1,2 @@
 rich>=13.0
-httpx>=0.25
-python-dotenv>=1.0
-pyfiglet>=1.0
+yfinance>=0.2

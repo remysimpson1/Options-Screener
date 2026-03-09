@@ -6,7 +6,6 @@ import sys
 import threading
 import time
 
-from dotenv import load_dotenv
 from rich.console import Console
 from rich.live import Live
 
@@ -15,8 +14,6 @@ from screener.api import fetch_all_chains
 from screener.scanner import scan_and_analyze, compute_summary
 from screener.filters import FilterState, apply_filters
 from screener.display import build_layout
-
-load_dotenv()
 
 console = Console()
 
@@ -105,18 +102,15 @@ def main():
     console.print("[bold cyan]Starting Options Flow Screener...[/]\n")
     console.print(f"[dim]Watchlist: {', '.join(config.WATCHLIST)}[/]")
     console.print(f"[dim]Refresh interval: {config.REFRESH_INTERVAL}s[/]")
-    console.print(f"[dim]Mode: {'Sandbox (delayed)' if config.USE_SANDBOX else 'Production (real-time)'}[/]")
+    console.print(f"[dim]Data source: Yahoo Finance (delayed)[/]")
     console.print()
 
     # Initial data fetch
     try:
         asyncio.run(fetch_data())
-    except RuntimeError as e:
-        console.print(f"[bold red]Error:[/] {e}")
-        sys.exit(1)
     except Exception as e:
         console.print(f"[bold red]API Error:[/] {e}")
-        console.print("[dim]Check your TRADIER_API_TOKEN and network connection.[/]")
+        console.print("[dim]Check your network connection. yfinance requires internet access.[/]")
         sys.exit(1)
 
     apply_current_filters()
