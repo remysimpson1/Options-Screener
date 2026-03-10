@@ -23,6 +23,24 @@ def _safe(val, default=0):
     return val
 
 
+def _get_spot_price(ticker: yf.Ticker) -> float:
+    """Get the current/last price for the underlying."""
+    try:
+        info = ticker.fast_info
+        price = getattr(info, "last_price", None)
+        if price and not math.isnan(price):
+            return float(price)
+    except Exception:
+        pass
+    try:
+        price = ticker.info.get("currentPrice") or ticker.info.get("regularMarketPrice")
+        if price:
+            return float(price)
+    except Exception:
+        pass
+    return 0.0
+
+
 def _fetch_chain_sync(symbol: str) -> list[dict]:
     """Fetch option chains for a single ticker (synchronous).
 
@@ -37,6 +55,7 @@ def _fetch_chain_sync(symbol: str) -> list[dict]:
     if not expirations:
         return []
 
+    spot = _get_spot_price(ticker)
     contracts: list[dict] = []
 
     for exp in expirations[: config.MAX_EXPIRATIONS]:
@@ -59,6 +78,7 @@ def _fetch_chain_sync(symbol: str) -> list[dict]:
                         "last": float(_safe(row.get("lastPrice"), 0)),
                         "volume": int(_safe(row.get("volume"), 0)),
                         "open_interest": int(_safe(row.get("openInterest"), 0)),
+                        "spot": spot,
                         "greeks": {
                             "mid_iv": float(_safe(row.get("impliedVolatility"), 0)),
                             "delta": 0.0,

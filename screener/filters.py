@@ -1,6 +1,8 @@
 """Filtering engine for the options flow feed."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+
+from screener import config
 
 
 @dataclass
@@ -8,7 +10,7 @@ class FilterState:
     """Tracks the current active filters."""
     option_type: str | None = None        # "call", "put", or None (all)
     ticker: str | None = None             # specific ticker or None (all)
-    min_premium: float = 0.0              # minimum est_premium
+    min_premium: float = config.MIN_PREMIUM_DEFAULT  # default $25K like CheddarFlow
     unusual_only: bool = False            # show only unusual activity
 
     def description(self) -> str:
@@ -26,7 +28,7 @@ class FilterState:
     def reset(self) -> None:
         self.option_type = None
         self.ticker = None
-        self.min_premium = 0.0
+        self.min_premium = config.MIN_PREMIUM_DEFAULT
         self.unusual_only = False
 
 
