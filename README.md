@@ -1,6 +1,6 @@
 # Options Flow Screener
 
-A real-time options flow screener that detects unusual activity using the Tradier API. Built with Python and Rich for a terminal-based dashboard.
+A real-time options flow screener that detects unusual activity using Yahoo Finance data via `yfinance`. Built with Python and Rich for a terminal-based dashboard. No API key required.
 
 ## Features
 
@@ -15,8 +15,6 @@ A real-time options flow screener that detects unusual activity using the Tradie
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
-# Edit .env with your Tradier API token
 python main.py
 ```
 
@@ -40,4 +38,4 @@ Edit `screener/config.py` to customize:
 - `REFRESH_INTERVAL` — seconds between scans
 - `VOL_OI_THRESHOLD` — Vol/OI ratio to flag as unusual
 - `BIG_PREMIUM_THRESHOLD` — premium threshold for big money alerts
-- `USE_SANDBOX` — use sandbox (delayed) or production (real-time) API
+- `REQUEST_DELAY` — seconds between ticker fetches (avoid Yahoo rate limits)
